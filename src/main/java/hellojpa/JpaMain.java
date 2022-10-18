@@ -1,6 +1,8 @@
 package hellojpa;
 
+import javax.management.relation.Role;
 import javax.persistence.*;
+import javax.swing.plaf.metal.MetalMenuBarUI;
 import java.util.List;
 
 public class JpaMain {
@@ -12,29 +14,30 @@ public class JpaMain {
         tx.begin();
 
         try{
-            Member member = em.find(Member.class, 150L);
-            member.setName("AAAA");
-            em.clear();
-            Member member2 = em.find(Member.class, 150L);
-            System.out.println("==============");
-//            //비영속
-//            Member member = new Member();
-//            member.setId(101L);
-//            member.setName("helloJPA2");
-//            //영속
-//            System.out.println("---before--");
-//            em.persist(member);
-//            System.out.println("---after---");
-//
-//            Member findMember = em.find(Member.class, 101L);
-//            System.out.println("findmember id = " + findMember.getId());
-//            System.out.println("findmember name = " + findMember.getName());
+            Member member = new Member();
+            member.setUsername("test");
+            member.setAddress(new Address("a","b","c"));
+            member.getFavoriteFooods().add("chick");
+            member.getFavoriteFooods().add("hamburger");
 
-//            List<Member> result = em.createQuery("select m from Member as m", Member.class).getResultList(); jpql 을 사용한 객체형 sql 조회
-//            Member findMember = em.find(Member.class, 1L);
-//            em.remove(findMember);  삭제
-//            findMember.setName("HelloJpa"); em.persist 하지 않아도 업데이트
-//            em.persist(member);
+
+            member.getAddressHistory().add(new Address("d", "d", "d"));
+            member.getAddressHistory().add(new Address("d", "d", "d"));
+
+            em.persist(member);
+
+            em.flush();
+            em.clear();
+
+            System.out.println("================= starter =================");
+            Member findMember = em.find(Member.class, member.getId());
+
+            List<Address> addressHistory = findMember.getAddressHistory();
+            for (Address address : addressHistory) {
+                System.out.println("address =" + address.getStreet());
+
+            }
+
 
             tx.commit();
         } catch (Exception e ){

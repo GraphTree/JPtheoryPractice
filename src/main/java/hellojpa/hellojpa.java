@@ -1,14 +1,28 @@
 package hellojpa;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.*;
+import java.util.List;
 
 public class hellojpa {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
         EntityManager em = emf.createEntityManager();
-        em.clear();
+
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        try {
+            tx.commit();
+
+
+
+        } catch (Exception e) {
+            tx.rollback();
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
         emf.close();
 
     }
